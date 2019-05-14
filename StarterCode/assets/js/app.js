@@ -25,12 +25,50 @@ var chartGroup = svg.append("g")
 .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`);
 
 // Load data from data.csv
-d3.csv("assets/data/data.csv", function(error, data) {
+d3.csv("assets/data/data.csv", function(data) {
 
     // Log an error if one exists
-    if (error) return console.warn(error);
+    // if (error) return console.warn(error);
   
     // Print the Data
-    console.log(data);
+    console.log(data[0]);
+
+    // // Cast data values
+    // data.forEach(function(d) {
+    //   // console.log(d)
+    //   d.poverty = +d.poverty;
+    //   d.healthcare = +d.healthcare;
+    //   // console.log(1)
+    // });
+
+    // // Create Scales
+    // var xScale = d3.scaleLinear()
+    //   .domain([0, d3.max(data, d => d.poverty)])
+    //   .range([0, chartWidth])
+
+    // var yScale = d3.scaleLinear()
+    //   .domain([[0, d3.max(data, d => d.healthcare)]])
+    //   .range([chartHeight, 0])
+
+    // // Create Axes
+    // var bottomAxis = d3.axisBottom(xScale);
+    // var leftAxis = d3.axisLeft(yScale);
+
+    // chartGroup.append("g")
+    //   .call(leftAxis);
+
+    // chartGroup.append("g")
+    //   .attr("transform", `translate(0, ${chartHeight})`)
+    //   .call(bottomAxis);
+
+    // // Create Circles
+    // chartGroup.selectAll("scatter-dots")
+    //   .data(data)
+    //   .enter()
+    //   .append("circle")
+    //   .attr("cx", d => xScale(d.poverty))
+    //   .attr("y", d => yScale(d.healthcare))
+    //   // .attr("width", xScale.bandwidth())
+    //   .attr("height", d => chartHeight - yScale(d.healthcare));
 
 });
