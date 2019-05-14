@@ -25,41 +25,39 @@ var chartGroup = svg.append("g")
 .attr("transform", `translate(${chartMargin.left}, ${chartMargin.top})`);
 
 // Load data from data.csv
-d3.csv("assets/data/data.csv", function(data) {
+d3.csv("assets/data/data.csv").then(function(data, error) {
 
     // Log an error if one exists
-    // if (error) return console.warn(error);
+    if (error) return console.warn(data);
   
     // Print the Data
-    console.log(data[0]);
+    console.log(data);
 
-    // // Cast data values
-    // data.forEach(function(d) {
-    //   // console.log(d)
-    //   d.poverty = +d.poverty;
-    //   d.healthcare = +d.healthcare;
-    //   // console.log(1)
-    // });
+    // Cast data values
+    data.forEach(function(d) {
+      d.poverty = +d.poverty;
+      d.healthcare = +d.healthcare;
+    });
 
-    // // Create Scales
-    // var xScale = d3.scaleLinear()
-    //   .domain([0, d3.max(data, d => d.poverty)])
-    //   .range([0, chartWidth])
+    // Create Scales
+    var xScale = d3.scaleLinear()
+      .domain([0, d3.max(data, d => d.poverty)])
+      .range([0, chartWidth])
 
-    // var yScale = d3.scaleLinear()
-    //   .domain([[0, d3.max(data, d => d.healthcare)]])
-    //   .range([chartHeight, 0])
+    var yScale = d3.scaleLinear()
+      .domain([[0, d3.max(data, d => d.healthcare)]])
+      .range([chartHeight, 0])
 
-    // // Create Axes
-    // var bottomAxis = d3.axisBottom(xScale);
-    // var leftAxis = d3.axisLeft(yScale);
+    // Create Axes
+    var bottomAxis = d3.axisBottom(xScale);
+    var leftAxis = d3.axisLeft(yScale);
 
-    // chartGroup.append("g")
-    //   .call(leftAxis);
+    chartGroup.append("g")
+      .call(leftAxis);
 
-    // chartGroup.append("g")
-    //   .attr("transform", `translate(0, ${chartHeight})`)
-    //   .call(bottomAxis);
+    chartGroup.append("g")
+      .attr("transform", `translate(0, ${chartHeight})`)
+      .call(bottomAxis);
 
     // // Create Circles
     // chartGroup.selectAll("scatter-dots")
