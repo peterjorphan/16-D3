@@ -1,13 +1,13 @@
 // Define SVG area dimensions
-var svgWidth = 960;
+var svgWidth = 900;
 var svgHeight = 660;
 
 // Define the chart's margins as an object
 var chartMargin = {
   top: 30,
   right: 30,
-  bottom: 30,
-  left: 30
+  bottom: 60,
+  left: 60
 };
 
 // Define dimensions of the chart area
@@ -37,17 +37,18 @@ d3.csv("assets/data/data.csv").then(function(data, error) {
     data.forEach(function(d) {
       d.poverty = +d.poverty;
       d.healthcare = +d.healthcare;
+      d.abbr = +d.abbr;
     });
 
     // Create Scales
     var xScale = d3.scaleLinear()
-      .domain([0, d3.max(data, d => d.poverty)])
+      .domain([d3.min(data, d => d.poverty)*0.9, d3.max(data, d => d.poverty)*1.1])
       .range([0, chartWidth])
 
     var yScale = d3.scaleLinear()
-      .domain([[0, d3.max(data, d => d.healthcare)]])
+      .domain([d3.min(data, d => d.healthcare)*0.9, d3.max(data, d => d.healthcare)*1.1])
       .range([chartHeight, 0])
-
+    
     // Create Axes
     var bottomAxis = d3.axisBottom(xScale);
     var leftAxis = d3.axisLeft(yScale);
@@ -59,14 +60,32 @@ d3.csv("assets/data/data.csv").then(function(data, error) {
       .attr("transform", `translate(0, ${chartHeight})`)
       .call(bottomAxis);
 
-    // // Create Circles
-    // chartGroup.selectAll("scatter-dots")
-    //   .data(data)
-    //   .enter()
-    //   .append("circle")
-    //   .attr("cx", d => xScale(d.poverty))
-    //   .attr("y", d => yScale(d.healthcare))
-    //   // .attr("width", xScale.bandwidth())
-    //   .attr("height", d => chartHeight - yScale(d.healthcare));
+    // Create Circles
+    chartGroup.selectAll("scatter-dots")
+      .data(data)
+      .enter()
+      .append("circle")
+      // .attr("class", "scatter")
+      .attr("cx", d => xScale(d.poverty))
+      .attr("cy", d => yScale(d.healthcare))
+      .attr("r", 12)
+      .attr("fill", 'lightblue')
+      .attr("width", d => chartWidth - xScale(d.poverty))
+      .attr("height", d => chartHeight - yScale(d.healthcare));
 
+    // Create labels
+    chartGroup.append("text")
+      .text("Lacks Healthcare %")
+      .attr("transform", "rotate(-90)")
+      .attr("y", -chartMargin.left/2)
+      .attr("x", -chartHeight/2 -chartMargin.top -35)
+      .attr("class", "axisText")
+      .attr("font-weight", "bold");
+    
+    chartGroup.append("text")
+      .text("In Poverty %")
+      .attr("y", chartHeight + chartMargin.bottom/2)
+      .attr("x", chartWidth/2-35)
+      .attr("class", "axisText")
+      .attr("font-weight", "bold");
 });
