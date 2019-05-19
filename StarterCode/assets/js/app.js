@@ -37,9 +37,8 @@ d3.csv("assets/data/data.csv").then(function(data, error) {
     data.forEach(function(d) {
       d.poverty = +d.poverty;
       d.healthcare = +d.healthcare;
-      d.abbr = +d.abbr;
     });
-
+    
     // Create Scales
     var xScale = d3.scaleLinear()
       .domain([d3.min(data, d => d.poverty)*0.9, d3.max(data, d => d.poverty)*1.1])
@@ -61,11 +60,13 @@ d3.csv("assets/data/data.csv").then(function(data, error) {
       .call(bottomAxis);
 
     // Create Circles
-    chartGroup.selectAll("scatter-dots")
+    var circles = chartGroup.selectAll("scatter-dots")
       .data(data)
-      .enter()
+      .enter();
+
+    circles
       .append("circle")
-      // .attr("class", "scatter")
+      .attr("class", "scatter")
       .attr("cx", d => xScale(d.poverty))
       .attr("cy", d => yScale(d.healthcare))
       .attr("r", 12)
@@ -73,19 +74,35 @@ d3.csv("assets/data/data.csv").then(function(data, error) {
       .attr("width", d => chartWidth - xScale(d.poverty))
       .attr("height", d => chartHeight - yScale(d.healthcare));
 
+    // Add state abbreviations in circles
+    circles
+      .append("text")
+      .text(d => d.abbr)
+      .attr("x", d => xScale(d.poverty))
+      .attr("y", d => yScale(d.healthcare))
+      .attr("text-anchor", "middle")
+      .attr("dominant-baseline", "central")
+      .attr("font-size", 11)
+      .attr("fill", "white")
+      .attr("font-weight", "bold");
+    
+    
     // Create labels
     chartGroup.append("text")
       .text("Lacks Healthcare %")
       .attr("transform", "rotate(-90)")
       .attr("y", -chartMargin.left/2)
-      .attr("x", -chartHeight/2 -chartMargin.top -35)
+      .attr("x", -chartHeight/2)
+      .attr("text-anchor", "middle")
       .attr("class", "axisText")
       .attr("font-weight", "bold");
     
     chartGroup.append("text")
       .text("In Poverty %")
-      .attr("y", chartHeight + chartMargin.bottom/2)
-      .attr("x", chartWidth/2-35)
+      .attr("y", chartHeight + chartMargin.top)
+      .attr("x", chartWidth/2)
+      .attr("text-anchor", "middle")
+      .attr("dominant-baseline", "central")
       .attr("class", "axisText")
       .attr("font-weight", "bold");
 });
